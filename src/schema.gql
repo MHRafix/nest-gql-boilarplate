@@ -1,0 +1,126 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type PagniationMeta {
+  totalCount: Float!
+  currentPage: Float!
+  hasNextPage: Boolean!
+  totalPages: Float!
+}
+
+type User {
+  _id: ID
+  name: String
+  email: String
+  role: USER_ROLE!
+  password: String!
+  avatar: String
+  accessToken: String
+  phone: String
+}
+
+enum USER_ROLE {
+  ADMIN
+  MODERATOR
+  CUSTOMER
+}
+
+type UserPagination {
+  nodes: [User!]
+  meta: PagniationMeta
+}
+
+type Query {
+  users(input: UserListQueryDto): UserPagination!
+  user(input: CommonMatchInput!): User!
+}
+
+input UserListQueryDto {
+  page: Int
+  limit: Int
+  sort: SortType
+  sortBy: String
+  where: [CommonMatchInput!]
+  whereOperator: WHERE_OPERATOR
+}
+
+enum SortType {
+  ASC
+  DESC
+}
+
+input CommonMatchInput {
+  key: String!
+  operator: MatchOperator!
+  value: String
+}
+
+enum MatchOperator {
+  eq
+  ne
+  gt
+  gte
+  lt
+  lte
+  in
+  nin
+  exists
+  contains
+}
+
+enum WHERE_OPERATOR {
+  and
+  or
+}
+
+type Mutation {
+  signUp(input: CreateUserInput!): User!
+  signIn(input: CreateUserInput!): User!
+  adminSignIn(input: CreateUserInput!): User!
+  updateUser(input: UpdateUserInput!): User!
+  removeUser(input: CommonMatchInput!): Boolean
+  bulkRemoveUser(uIds: [String!]!): Boolean
+}
+
+input CreateUserInput {
+  _id: ID
+
+  """User name"""
+  name: String
+
+  """User email"""
+  email: String!
+
+  """User role"""
+  role: USER_ROLE
+
+  """User password"""
+  password: String!
+
+  """User avatar"""
+  avatar: String
+  accessToken: String
+  phone: String
+}
+
+input UpdateUserInput {
+  _id: String
+
+  """User name"""
+  name: String
+
+  """User email"""
+  email: String
+
+  """User role"""
+  role: USER_ROLE
+
+  """User password"""
+  password: String
+
+  """User avatar"""
+  avatar: String
+  accessToken: String
+  phone: String
+}
