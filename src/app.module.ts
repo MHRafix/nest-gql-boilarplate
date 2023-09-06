@@ -5,6 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { join } from 'path';
+import { CommentsModule } from './api/comments/comments.module';
 import { PostsModule } from './api/posts/posts.module';
 import { UsersModule } from './api/users/users.module';
 import { AppController } from './app.controller';
@@ -47,6 +48,7 @@ import { JwtStrategy } from './app/config/jwtStrategy';
     // APIs
     UsersModule,
     PostsModule,
+    CommentsModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

@@ -17,7 +17,7 @@ import { PostsService } from './posts.service';
 @Resolver(() => Post)
 export class PostsResolver {
   constructor(private readonly servicesService: PostsService) {}
-
+ 
   @Mutation(() => Boolean)
   // @UseGuards(GqlAuthGuard)
   async createPost(@Args('input') input: CreatePostInput) {
@@ -46,7 +46,7 @@ export class PostsResolver {
     } catch (error) {
       throw new BadRequestException(error.message);
     }
-  }
+  } 
 
   @Mutation(() => Boolean)
   @UseGuards(GqlAuthGuard)

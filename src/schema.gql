@@ -51,11 +51,26 @@ type PostPagination {
   meta: PagniationMeta
 }
 
+type Comment {
+  _id: ID
+  message: String!
+  file: String!
+  userId: User!
+  postId: Post!
+}
+
+type CommentPagination {
+  nodes: [Comment!]
+  meta: PagniationMeta
+}
+
 type Query {
   users(input: UserListQueryDto): UserPagination!
   user(input: CommonMatchInput!): User!
   posts(input: PostListQueryDto): PostPagination!
   post(input: CommonMatchInput!): Post!
+  comments(payload: PostListQueryDto): CommentPagination!
+  comment(payload: CommonMatchInput!): Comment!
 }
 
 input UserListQueryDto {
@@ -115,6 +130,9 @@ type Mutation {
   createPost(input: CreatePostInput!): Boolean!
   updatePost(input: UpdatePostInput!): Boolean!
   removePost(input: CommonMatchInput!): Boolean
+  createComment(payload: CreateCommentInput!): Boolean!
+  updateComment(updateCommentInput: UpdateCommentInput!): Comment!
+  removeComment(id: Int!): Comment!
 }
 
 input CreateUserInput {
@@ -177,4 +195,20 @@ input UpdatePostInput {
   files: [String!]
   userId: String
   shareFrom: String
+}
+
+input CreateCommentInput {
+  _id: ID
+  message: String!
+  file: String
+  userId: String!
+  postId: String
+}
+
+input UpdateCommentInput {
+  _id: String!
+  message: String
+  file: String
+  userId: String
+  postId: String
 }
