@@ -31,9 +31,31 @@ type UserPagination {
   meta: PagniationMeta
 }
 
+type Post {
+  _id: ID
+  title: String!
+  description: String
+  status: POST_STATUS
+  files: [String!]
+  userId: User
+  shareFrom: User
+}
+
+enum POST_STATUS {
+  PUBLISHED
+  BLOCKED
+}
+
+type PostPagination {
+  nodes: [Post!]
+  meta: PagniationMeta
+}
+
 type Query {
   users(input: UserListQueryDto): UserPagination!
   user(input: CommonMatchInput!): User!
+  posts(input: PostListQueryDto): PostPagination!
+  post(input: CommonMatchInput!): Post!
 }
 
 input UserListQueryDto {
@@ -74,13 +96,25 @@ enum WHERE_OPERATOR {
   or
 }
 
+input PostListQueryDto {
+  page: Int
+  limit: Int
+  sort: SortType
+  sortBy: String
+  where: [CommonMatchInput!]
+  whereOperator: WHERE_OPERATOR
+}
+
 type Mutation {
-  signUp(input: CreateUserInput!): User!
+  signUp(input: CreateUserInput!): Boolean!
   signIn(input: CreateUserInput!): User!
   adminSignIn(input: CreateUserInput!): User!
-  updateUser(input: UpdateUserInput!): User!
+  updateUser(input: UpdateUserInput!): Boolean!
   removeUser(input: CommonMatchInput!): Boolean
   bulkRemoveUser(uIds: [String!]!): Boolean
+  createPost(input: CreatePostInput!): Boolean!
+  updatePost(input: UpdatePostInput!): Boolean!
+  removePost(input: CommonMatchInput!): Boolean
 }
 
 input CreateUserInput {
@@ -123,4 +157,24 @@ input UpdateUserInput {
   avatar: String
   accessToken: String
   phone: String
+}
+
+input CreatePostInput {
+  _id: ID
+  title: String!
+  description: String
+  status: POST_STATUS = PUBLISHED
+  files: [String!]
+  userId: String!
+  shareFrom: String
+}
+
+input UpdatePostInput {
+  _id: String!
+  title: String
+  description: String
+  status: POST_STATUS = PUBLISHED
+  files: [String!]
+  userId: String
+  shareFrom: String
 }

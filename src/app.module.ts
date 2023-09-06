@@ -5,6 +5,7 @@ import { GraphQLModule } from '@nestjs/graphql';
 import { JwtModule } from '@nestjs/jwt';
 import { MongooseModule } from '@nestjs/mongoose';
 import { join } from 'path';
+import { PostsModule } from './api/posts/posts.module';
 import { UsersModule } from './api/users/users.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -45,6 +46,7 @@ import { JwtStrategy } from './app/config/jwtStrategy';
     MongooseModule.forRoot(process.env.MONGODB_CONNECTION_URI),
     // APIs
     UsersModule,
+    PostsModule,
   ],
   controllers: [AppController],
   providers: [AppService, JwtStrategy],

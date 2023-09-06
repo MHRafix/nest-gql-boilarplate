@@ -18,10 +18,11 @@ import { UsersService } from './users.service';
 export class UsersResolver {
   constructor(private readonly usersService: UsersService) {}
 
-  @Mutation(() => User)
-  signUp(@Args('input') input: CreateUserInput) {
+  @Mutation(() => Boolean)
+  async signUp(@Args('input') input: CreateUserInput) {
     try {
-      return this.usersService.signup(input);
+      await this.usersService.signup(input);
+      return true;
     } catch (err) {
       throw new BadRequestException(err.message);
     }
@@ -45,7 +46,7 @@ export class UsersResolver {
   }
 
   @Query(() => UserPagination, { name: 'users' })
-  @UseGuards(GqlAuthGuard)
+  // @UseGuards(GqlAuthGuard)
   findAll(
     @Args('input', { nullable: true }) input: UserListQueryDto,
     @Info() info: any,
@@ -69,12 +70,12 @@ export class UsersResolver {
     }
   }
 
-  @Mutation(() => User)
+  @Mutation(() => Boolean)
   @UseGuards(GqlAuthGuard)
   async updateUser(@Args('input') input: UpdateUserInput) {
     try {
       await this.usersService.update(input._id, input);
-      return this.usersService.findOne({ _id: input._id });
+      return true;
     } catch (err) {
       throw new BadRequestException(err.message);
     }
