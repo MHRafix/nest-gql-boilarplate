@@ -1,8 +1,13 @@
+import { GqlAuthGuard } from '@/src/app/config/jwtGqlGuard';
 import { CommonMatchInput } from '@/src/shared/dto/CommonFindOneDto';
 import { mongodbFindObjectBuilder } from '@/src/shared/utils/filterBuilder';
 import getGqlFields from '@/src/shared/utils/get-gql-fields';
-import { BadRequestException } from '@nestjs/common';
-import { Args, Info, Int, Mutation, Query, Resolver } from '@nestjs/graphql';
+import {
+  BadRequestException,
+  ForbiddenException,
+  UseGuards,
+} from '@nestjs/common';
+import { Args, Info, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { PostListQueryDto } from '../posts/dto/post-list-query-dto';
 import { CommentsService } from './comments.service';
 import { CreateCommentInput } from './dto/create-comment.input';
@@ -42,18 +47,28 @@ export class CommentsResolver {
     }
   }
 
-  @Mutation(() => Comment)
-  updateComment(
-    @Args('updateCommentInput') updateCommentInput: UpdateCommentInput,
+  @Mutation(() => Boolean)
+  @UseGuards(GqlAuthGuard)
+  async updateComment(
+    @Args('input')
+    input: UpdateCommentInput,
   ) {
-    return this.commentsService.update(
-      updateCommentInput._id,
-      updateCommentInput,
-    );
+    try {
+      return this.commentsService.update(input._id, input);
+    } catch (err) {
+      throw new BadRequestException(err.message);
+    }
   }
 
-  @Mutation(() => Comment)
-  removeComment(@Args('id', { type: () => Int }) id: number) {
-    return this.commentsService.remove(id);
+  @Mutation(() => Boolean, { nullable: true })
+  @UseGuards(GqlAuthGuard)
+  async removeComment(@Args('input') input: CommonMatchInput) {
+    try {
+      const find = mongodbFindObjectBuilder(input);
+      const res = await this.commentsService.remove(find);
+      return res.deletedCount > 0;
+    } catch (error) {
+      throw new ForbiddenException(error.message);
+    }
   }
 }

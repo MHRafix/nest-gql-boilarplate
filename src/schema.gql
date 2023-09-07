@@ -131,8 +131,8 @@ type Mutation {
   updatePost(input: UpdatePostInput!): Boolean!
   removePost(input: CommonMatchInput!): Boolean
   createComment(payload: CreateCommentInput!): Boolean!
-  updateComment(updateCommentInput: UpdateCommentInput!): Comment!
-  removeComment(id: Int!): Comment!
+  updateComment(input: UpdateCommentInput!): Boolean!
+  removeComment(input: CommonMatchInput!): Boolean
 }
 
 input CreateUserInput {

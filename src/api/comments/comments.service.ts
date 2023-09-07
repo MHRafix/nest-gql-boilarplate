@@ -32,7 +32,6 @@ export class CommentsService {
   async findAll(payload: CommentListQueryDto, fields: string[] = []) {
     const { page = 1, limit = 10 } = payload;
     const where = filterBuilder(payload.where, payload.whereOperator);
-
     const cursor = this.commentModel.find(where);
 
     // populate comment author info
@@ -85,11 +84,23 @@ export class CommentsService {
     }
   }
 
-  update(id: string, updateCommentInput: UpdateCommentInput) {
-    return `This action updates a #${id} comment`;
+  /**
+   * update comment
+   * @param _id comment id
+   * @param payload update payload
+   * @returns
+   */
+  async update(_id: string, payload: UpdateCommentInput) {
+    await this.commentModel.findOneAndUpdate({ _id }, payload);
+    return true;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} comment`;
+  /**
+   * delete comment
+   * @param filter filter
+   * @returns
+   */
+  remove(filter: FilterQuery<CommentDocument>) {
+    return this.commentModel.deleteOne(filter);
   }
 }
